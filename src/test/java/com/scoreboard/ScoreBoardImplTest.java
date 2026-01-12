@@ -95,6 +95,50 @@ class ScoreBoardImplTest {
         assertTrue(exception.getMessage().contains("not found"));
     }
 
+    @Test
+    @DisplayName("Should update score of existing match")
+    void testUpdateScore_Success() throws ScoreBoardException {
+        scoreBoard.startMatch("Mexico", "Canada");
+
+        Match updated = scoreBoard.updateScore("Mexico", "Canada", 0, 5);
+
+        assertEquals(0, updated.getHomeScore());
+        assertEquals(5, updated.getAwayScore());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when updating non-existent match")
+    void testUpdateScore_NotFound() {
+        ScoreBoardException exception = assertThrows(ScoreBoardException.class, () -> {
+            scoreBoard.updateScore("Mexico", "Canada", 1, 1);
+        });
+
+        assertTrue(exception.getMessage().contains("not found"));
+    }
+
+    @Test
+    @DisplayName("Should throw exception when home score is negative")
+    void testUpdateScore_NegativeHomeScore() throws ScoreBoardException {
+        scoreBoard.startMatch("Mexico", "Canada");
+
+        ScoreBoardException exception = assertThrows(ScoreBoardException.class, () -> {
+            scoreBoard.updateScore("Mexico", "Canada", -1, 5);
+        });
+
+        assertTrue(exception.getMessage().contains("cannot be negative"));
+    }
+
+    @Test
+    @DisplayName("Should throw exception when away score is negative")
+    void testUpdateScore_NegativeAwayScore() throws ScoreBoardException {
+        scoreBoard.startMatch("Mexico", "Canada");
+
+        ScoreBoardException exception = assertThrows(ScoreBoardException.class, () -> {
+            scoreBoard.updateScore("Mexico", "Canada", 0, -5);
+        });
+
+        assertTrue(exception.getMessage().contains("cannot be negative"));
+    }
 
 }
 
