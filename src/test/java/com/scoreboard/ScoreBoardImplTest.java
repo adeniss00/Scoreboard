@@ -6,10 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import java.util.List;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class ScoreBoardImplTest {
@@ -25,7 +25,6 @@ class ScoreBoardImplTest {
     @DisplayName("Should start a match with initial score 0-0")
     void testStartMatch_Success() throws ScoreBoardException {
         Match match = scoreBoard.startMatch("Mexico", "Canada");
-
         assertNotNull(match);
         assertEquals("Mexico", match.getHomeTeam());
         assertEquals("Canada", match.getAwayTeam());
