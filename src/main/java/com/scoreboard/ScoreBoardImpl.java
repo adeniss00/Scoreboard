@@ -56,4 +56,31 @@ public class ScoreBoardImpl implements IScoreBoard {
             throw new ScoreBoardException("A team cannot play against itself");
         }
     }
+
+    @Override
+    public Match updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore)
+            throws ScoreBoardException {
+        validateTeams(homeTeam, awayTeam);
+        validateScores(homeScore, awayScore);
+
+        String key = generateKey(homeTeam, awayTeam);
+        Match existingMatch = matches.get(key);
+
+        if (existingMatch == null) {
+            throw new ScoreBoardException("Match " + key + " not found");
+        }
+
+        Match updatedMatch = existingMatch.withScore(homeScore, awayScore);
+        matches.put(key, updatedMatch);
+
+        return updatedMatch;
+    }
+    private void validateScores(int homeScore, int awayScore) throws ScoreBoardException {
+        if (homeScore < 0) {
+            throw new ScoreBoardException("Home score cannot be negative");
+        }
+        if (awayScore < 0) {
+            throw new ScoreBoardException("Away score cannot be negative");
+        }
+    }
 }

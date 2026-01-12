@@ -29,4 +29,8 @@ public class Match {
         return awayScore;
     }
 
+    public Match withScore(int newHomeScore, int newAwayScore) {
+    return new Match(homeTeam,awayTeam,newHomeScore,newAwayScore);
+    }
+
 }
