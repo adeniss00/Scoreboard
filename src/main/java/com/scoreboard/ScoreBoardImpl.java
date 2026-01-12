@@ -3,8 +3,11 @@ package com.scoreboard;
 import com.scoreboard.exception.ScoreBoardException;
 import com.scoreboard.model.Match;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ScoreBoardImpl implements IScoreBoard {
     private final Map<String, Match> matches;
@@ -23,7 +26,7 @@ public class ScoreBoardImpl implements IScoreBoard {
             throw new ScoreBoardException("Match " + key + " already exists");
         }
 
-        Match match = new Match(homeTeam, awayTeam, 0, 0);
+        Match match = new Match(homeTeam, awayTeam, 0, 0,System.currentTimeMillis());
         matches.put(key, match);
 
         return match;
@@ -82,5 +85,13 @@ public class ScoreBoardImpl implements IScoreBoard {
         if (awayScore < 0) {
             throw new ScoreBoardException("Away score cannot be negative");
         }
+    }
+    @Override
+    public List<Match> getSummary() {
+        return matches.values().stream()
+                .sorted(Comparator
+                        .comparing(Match::getTotalScore, Comparator.reverseOrder())
+                        .thenComparing(Match::startTime, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
     }
 }

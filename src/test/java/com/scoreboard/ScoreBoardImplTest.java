@@ -8,7 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class ScoreBoardImplTest {
@@ -25,10 +28,10 @@ class ScoreBoardImplTest {
     void testStartMatch_Success() throws ScoreBoardException {
         Match match = scoreBoard.startMatch("Mexico", "Canada");
         assertNotNull(match);
-        assertEquals("Mexico", match.getHomeTeam());
-        assertEquals("Canada", match.getAwayTeam());
-        assertEquals(0, match.getHomeScore());
-        assertEquals(0, match.getAwayScore());
+        assertEquals("Mexico", match.homeTeam());
+        assertEquals("Canada", match.awayTeam());
+        assertEquals(0, match.homeScore());
+        assertEquals(0, match.awayScore());
     }
 
     @Test
@@ -80,8 +83,8 @@ class ScoreBoardImplTest {
         Match finishedMatch = scoreBoard.finishMatch("Mexico", "Canada");
 
         assertNotNull(finishedMatch);
-        assertEquals("Mexico", finishedMatch.getHomeTeam());
-        assertEquals("Canada", finishedMatch.getAwayTeam());
+        assertEquals("Mexico", finishedMatch.homeTeam());
+        assertEquals("Canada", finishedMatch.awayTeam());
     }
 
     @Test
@@ -101,8 +104,8 @@ class ScoreBoardImplTest {
 
         Match updated = scoreBoard.updateScore("Mexico", "Canada", 0, 5);
 
-        assertEquals(0, updated.getHomeScore());
-        assertEquals(5, updated.getAwayScore());
+        assertEquals(0, updated.homeScore());
+        assertEquals(5, updated.awayScore());
     }
 
     @Test
@@ -148,22 +151,21 @@ class ScoreBoardImplTest {
 
     @Test
     @DisplayName("Should return matches sorted by total score descending")
-    void testGetSummary_SortedByScore() throws ScoreBoardException {
+    void testGetSummary_SortedByScore() throws ScoreBoardException, InterruptedException {
         scoreBoard.startMatch("Mexico", "Canada");
-        scoreBoard.updateScore("Mexico", "Canada", 0, 5);
-
+        Thread.sleep(50);
         scoreBoard.startMatch("Spain", "Brazil");
-        scoreBoard.updateScore("Spain", "Brazil", 10, 2);
-
+        Thread.sleep(50);
         scoreBoard.startMatch("Germany", "France");
         scoreBoard.updateScore("Germany", "France", 2, 2);
-
+        scoreBoard.updateScore("Spain", "Brazil", 10, 2);
+        scoreBoard.updateScore("Mexico", "Canada", 0, 5);
         List<Match> summary = scoreBoard.getSummary();
 
         assertEquals(3, summary.size());
-        assertEquals("Spain", summary.get(0).getHomeTeam());
-        assertEquals("Mexico", summary.get(1).getHomeTeam());
-        assertEquals("Germany", summary.get(2).getHomeTeam());
+        assertEquals("Spain", summary.get(0).homeTeam());
+        assertEquals("Mexico", summary.get(1).homeTeam());
+        assertEquals("Germany", summary.get(2).homeTeam());
     }
     @Test
     @DisplayName("Should sort by most recent when total scores are equal")
@@ -183,9 +185,9 @@ class ScoreBoardImplTest {
 
         List<Match> summary = scoreBoard.getSummary();
 
-        assertEquals("Uruguay", summary.get(0).getHomeTeam());
-        assertEquals("Spain", summary.get(1).getHomeTeam());
-        assertEquals("Mexico", summary.get(2).getHomeTeam());
+        assertEquals("Uruguay", summary.get(0).homeTeam());
+        assertEquals("Spain", summary.get(1).homeTeam());
+        assertEquals("Mexico", summary.get(2).homeTeam());
     }
 
     @Test
